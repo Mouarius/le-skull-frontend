@@ -41,10 +41,11 @@
 <script>
 import axios from "axios";
 import { API_URL } from "../config/env";
+import { joinRoom } from "../socket";
 
 export default {
   name: "login-panel",
-  props: ["updatePlayer"],
+  props: ["updatePlayer", "updateRoom"],
   data() {
     return {
       inputUsername: "",
@@ -54,22 +55,29 @@ export default {
   methods: {
     handleCreateGameButton(e) {
       e.preventDefault();
+      console.log("Creating a new game...");
       axios
         .post(API_URL + "/room/", { username: this.inputUsername })
         .then((res) => {
           const { room, user } = res.data;
-          console.log(result.data);
+          console.log(res.data);
           this.updatePlayer(user);
+          this.updateRoom(room);
+          joinRoom(room.id);
         });
     },
     handleJoinGameButton(e) {
       e.preventDefault();
+      console.log(`Joining the game with id ${this.inputRoomId} ...`);
       axios
         .post(API_URL + `/room/${this.inputRoomId}`, {
           username: this.inputUsername,
         })
         .then((res) => {
-          console.log(res.data);
+          const { room, user } = res.data;
+          this.updatePlayer(user);
+          this.updateRoom(room);
+          joinRoom(room.id);
         });
     },
     handleLoginFormSubmit(e) {

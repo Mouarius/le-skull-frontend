@@ -1,14 +1,14 @@
 <template>
-  <div class="app">
+  <div class="container">
     <h1>Le Skull</h1>
-    <login-form></login-form>
-    <form @submit="handleFormSubmit">
-      <input
-        type="text"
-        name="input-username"
-        id="input-username"
-        v-model="player.username"
-      />
+    <player-info :player="player"></player-info>
+    <room-info :room="room" v-if="room !== {}" />
+    <login-panel
+      v-if="!player.id"
+      :update-player="updatePlayer"
+      :update-room="updateRoom"
+    ></login-panel>
+    <!-- <form @submit="handleFormSubmit">
       <input
         type="radio"
         id="input-player-color"
@@ -28,26 +28,26 @@
         v-model="player.color"
       />
       <input type="submit" value="Join" />
-    </form>
-    <h2>Control Panel</h2>
-    <div class="control-panel">
+    </form> -->
+    <div class="control-panel center-panel card">
+      <h2>Control Panel</h2>
       <div class="debug-panel debug-buttons">
         <ul>
           <li><button @click="handleHelloButton">hello</button></li>
           <li>
             <button
               @click="handleTestButton"
-              name="test-button-player-list"
-              value="player-list"
+              name="test-button-user-list"
+              value="user-list"
             >
-              update player list
+              update user list
             </button>
           </li>
         </ul>
       </div>
       <div class="debug-panel debug-display">
-        <ul class="player-list">
-          <li v-for="player in players" :key="player.id">{{ player.id }}</li>
+        <ul class="user-list">
+          <li v-for="user in users" :key="user.id">{{ user.username }}</li>
         </ul>
       </div>
     </div>
@@ -56,64 +56,92 @@
 
 <script>
 import { io } from "socket.io-client";
-import LoginForm from "./components/LoginForm.vue";
-const socket = io("http://localhost:4000");
+import LoginPanel from "./components/LoginPanel.vue";
+import PlayerInfo from "./components/Debug/PlayerInfo.vue";
+import axios from "axios";
+import { API_URL } from "./config/env";
+import RoomInfo from "./components/Debug/RoomInfo.vue";
+const socket = io("http://localhost:4001");
 
 export default {
   name: "App",
-  components: { LoginForm },
+  components: { LoginPanel, PlayerInfo, RoomInfo },
   data() {
     return {
       players: [],
+      users: [],
       player: {
+        id: "",
         username: "",
         color: "",
         socket: "",
       },
+      room: {},
     };
   },
   methods: {
+    updatePlayer(newPlayer) {
+      this.player.id = newPlayer.id;
+      this.player.username = newPlayer.username;
+    },
+    updateRoom(newRoom) {
+      this.room = newRoom;
+    },
     handleHelloButton() {
-      console.log("hello");
       socket.emit("hello");
     },
     handleTestButton(e) {
       const button = e.target;
-      if (button.value === "player-list") {
-        console.log("🛠 TEST - Requesting the list of players");
-        socket.emit("GET/PLAYER_LIST");
+      if (button.value === "user-list") {
+        console.log("🛠 TEST - Requesting the list of users");
+        axios.get(API_URL + "/player/").then((res) => {
+          console.log(res.data);
+          this.users = res.data;
+        });
       }
     },
-    handleFormSubmit(e) {
-      e.preventDefault();
-      joinGame(player);
-    },
-    joinGame(player) {
-      console.log("Requesting to join the game :", this.player);
-      socket.emit("REQUEST/JOIN_GAME", JSON.stringify(this.player));
-    },
   },
-  created() {
-    socket.on("connect", () => {
-      console.log("Connected to the server");
-    });
-    socket.on("GET/PLAYER_LIST/RESPONSE", (res) => {
-      console.log(res);
-      const newPlayers = JSON.parse(res);
-      this.players = newPlayers;
-    });
-  },
+  created() {},
 };
 </script>
 
-<style>
-ul {
-  list-style-type: none;
+<style lang="scss">
+body {
+  font-family: "Public Sans", Arial, sans-serif;
+}
+h1 {
+  font-size: 3em;
+  font-weight: 600;
+}
+h2 {
+  font-size: 1.2em;
+  font-weight: 600;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 5%;
+}
+.card {
+  padding: 1.2em;
+  border: solid black 3px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
 }
 .control-panel {
   display: flex;
 }
 .control-panel h2 {
   flex: 0;
+}
+.center-panel {
+  width: 100%;
+  max-width: 400px;
+}
+.flex-column {
+  display: flex;
+  flex-direction: column;
 }
 </style>
