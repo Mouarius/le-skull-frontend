@@ -30,9 +30,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.room-info {
-  margin-top: 18px;
-}
 .player-list {
   padding-left: 12px;
 }
