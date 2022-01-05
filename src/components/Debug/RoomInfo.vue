@@ -1,23 +1,39 @@
 <template>
-  <div>
+  <section class="info room-info">
     <h2>Room Info :</h2>
-    <ul>
-      <li>id : {{ room.id }}</li>
+    <ul class="var-list">
+      <li>
+        id : <em>{{ sharedState.room.id }}</em>
+      </li>
       <li>
         players :
-        <ul>
-          <li v-for="player in room.players" :key="player.id">
-            {{ player.username }}
+        <ul class="player-list">
+          <li v-for="player in sharedState.room.players" :key="player.id">
+            <em>{{ player.username }}</em>
           </li>
         </ul>
       </li>
     </ul>
-  </div>
+  </section>
 </template>
 
 <script>
+import { store } from "../../store";
 export default {
   name: "room-info",
-  props: ["room"],
+  data() {
+    return {
+      sharedState: store.state,
+    };
+  },
 };
 </script>
+
+<style lang="scss" scoped>
+.room-info {
+  margin-top: 18px;
+}
+.player-list {
+  padding-left: 12px;
+}
+</style>

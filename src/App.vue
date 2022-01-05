@@ -1,71 +1,27 @@
 <template>
   <div class="container">
-    <h1>Le Skull</h1>
-    <player-info :player="player"></player-info>
-    <room-info :room="room" v-if="room !== {}" />
-    <login-panel
-      v-if="!player.id"
-      :update-player="updatePlayer"
-      :update-room="updateRoom"
-    ></login-panel>
-    <!-- <form @submit="handleFormSubmit">
-      <input
-        type="radio"
-        id="input-player-color"
-        value="red"
-        v-model="player.color"
-      />
-      <input
-        type="radio"
-        id="input-player-color"
-        value="orange"
-        v-model="player.color"
-      />
-      <input
-        type="radio"
-        id="input-player-color"
-        value="yellow"
-        v-model="player.color"
-      />
-      <input type="submit" value="Join" />
-    </form> -->
-    <div class="control-panel center-panel card">
-      <h2>Control Panel</h2>
-      <div class="debug-panel debug-buttons">
-        <ul>
-          <li><button @click="handleHelloButton">hello</button></li>
-          <li>
-            <button
-              @click="handleTestButton"
-              name="test-button-user-list"
-              value="user-list"
-            >
-              update user list
-            </button>
-          </li>
-        </ul>
-      </div>
-      <div class="debug-panel debug-display">
-        <ul class="user-list">
-          <li v-for="user in users" :key="user.id">{{ user.username }}</li>
-        </ul>
-      </div>
+    <div class="page-title">
+      <h1>Le Skull</h1>
+      <div class="title-decoration"></div>
+    </div>
+    <debug-panel />
+    <login-panel v-if="!player.id" :update-player="updatePlayer"></login-panel>
+    <div class="lobby-panel card center-panel" v-if="sharedState.room.id">
+      <h2>Lobby</h2>
     </div>
   </div>
 </template>
 
 <script>
-import { io } from "socket.io-client";
 import LoginPanel from "./components/LoginPanel.vue";
-import PlayerInfo from "./components/Debug/PlayerInfo.vue";
+import DebugPanel from "./components/Debug/DebugPanel.vue";
 import axios from "axios";
 import { API_URL } from "./config/env";
-import RoomInfo from "./components/Debug/RoomInfo.vue";
-const socket = io("http://localhost:4001");
+import { store } from "./store";
 
 export default {
   name: "App",
-  components: { LoginPanel, PlayerInfo, RoomInfo },
+  components: { LoginPanel, DebugPanel, DebugPanel },
   data() {
     return {
       players: [],
@@ -76,16 +32,14 @@ export default {
         color: "",
         socket: "",
       },
-      room: {},
+      sharedState: store.state,
     };
   },
   methods: {
     updatePlayer(newPlayer) {
       this.player.id = newPlayer.id;
       this.player.username = newPlayer.username;
-    },
-    updateRoom(newRoom) {
-      this.room = newRoom;
+      store.setPlayerAction(this.player);
     },
     handleHelloButton() {
       socket.emit("hello");
@@ -106,22 +60,68 @@ export default {
 </script>
 
 <style lang="scss">
+/* SCSS HEX */
+$light-grey: #f7f7f7;
+$robin-egg-blue: #1ac7c4ff;
+$medium-slate-blue: #8075ffff;
+$deep-saffron: #f19a3eff;
+$charcoal: rgb(30, 37, 48);
+$cream: #f1fec6ff;
 body {
+  box-sizing: border-box;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: $light-grey;
+  border: solid $medium-slate-blue 12px;
   font-family: "Public Sans", Arial, sans-serif;
-}
-h1 {
-  font-size: 3em;
-  font-weight: 600;
-}
-h2 {
-  font-size: 1.2em;
-  font-weight: 600;
 }
 .container {
   display: flex;
+  position: relative;
   flex-direction: column;
   align-items: center;
-  margin: 0 5%;
+  margin: 30px 50px;
+}
+.panel {
+  display: block;
+  width: 100%;
+  border: solid 4px $charcoal;
+  padding: 12px;
+  box-sizing: border-box;
+  h1 {
+    font-family: "Heebo", sans-serif;
+    font-weight: 800;
+    font-size: 1.8em;
+    text-align: left;
+  }
+}
+.page-title {
+  position: relative;
+  h1 {
+    position: relative;
+    font-family: "Heebo", sans-serif;
+    color: $charcoal;
+    font-size: 6em;
+    font-weight: 900;
+    z-index: 10;
+  }
+  .title-decoration {
+    position: absolute;
+    background: $medium-slate-blue;
+    height: 32px;
+    width: 100%;
+    transform: translateX(12px) translateY(-38px);
+    z-index: 1;
+  }
+}
+h2 {
+  font-size: 1.8em;
+  font-weight: 600;
+}
+h3 {
+  font-size: 1.2em;
+  font-weight: 600;
 }
 .card {
   padding: 1.2em;

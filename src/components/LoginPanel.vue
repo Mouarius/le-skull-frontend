@@ -1,5 +1,5 @@
 <template>
-  <div class="login-panel center-panel card">
+  <div class="panel login-panel center-panel">
     <h2>login form</h2>
     <form class="login-form" @submit="handleLoginFormSubmit">
       <div class="username-input">
@@ -42,10 +42,11 @@
 import axios from "axios";
 import { API_URL } from "../config/env";
 import { joinRoom } from "../socket";
+import { store } from "../store";
 
 export default {
   name: "login-panel",
-  props: ["updatePlayer", "updateRoom"],
+  props: ["updatePlayer"],
   data() {
     return {
       inputUsername: "",
@@ -62,7 +63,7 @@ export default {
           const { room, user } = res.data;
           console.log(res.data);
           this.updatePlayer(user);
-          this.updateRoom(room);
+          store.setRoomAction(room);
           joinRoom(room.id);
         });
     },
@@ -76,7 +77,7 @@ export default {
         .then((res) => {
           const { room, user } = res.data;
           this.updatePlayer(user);
-          this.updateRoom(room);
+          store.setRoomAction(room);
           joinRoom(room.id);
         });
     },
