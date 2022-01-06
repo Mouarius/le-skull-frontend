@@ -12,6 +12,9 @@ export const store = {
       color: "",
       socket: "",
     },
+    colors: [
+      //Must retrieve the colors list from the server
+    ],
   }),
   setRoomAction(newRoom) {
     if (this.debug) {
@@ -24,5 +27,11 @@ export const store = {
       console.log("[STORE] - Updating the player to :", newPlayer);
     }
     this.state.player = newPlayer;
+  },
+  setColorsAction(newColors) {
+    if (this.debug) {
+      console.log("[STORE] - Updating the colors to :", newColors);
+    }
+    this.state.colors = newColors;
   },
 };
