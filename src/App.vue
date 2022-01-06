@@ -63,7 +63,7 @@ body {
   width: 100%;
   height: 100%;
   background: $light-grey;
-  border: solid $medium-slate-blue 12px;
+  border: solid $primary 12px;
   font-family: "Public Sans", Arial, sans-serif;
 }
 .container {
@@ -98,7 +98,7 @@ body {
   }
   .title-decoration {
     position: absolute;
-    background: $medium-slate-blue;
+    background: $primary;
     height: 32px;
     width: 100%;
     transform: translateX(12px) translateY(-38px);

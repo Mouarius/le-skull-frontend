@@ -91,8 +91,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$charcoal: rgb(30, 37, 48);
-
 input[type="button"] {
   background: white;
 }
