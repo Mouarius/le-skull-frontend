@@ -6,9 +6,6 @@
     </div>
     <debug-panel />
     <login-panel v-if="!player.id" :update-player="updatePlayer"></login-panel>
-    <div class="lobby-panel card center-panel" v-if="sharedState.room.id">
-      <h2>Lobby</h2>
-    </div>
   </div>
 </template>
 
@@ -60,13 +57,6 @@ export default {
 </script>
 
 <style lang="scss">
-/* SCSS HEX */
-$light-grey: #f7f7f7;
-$robin-egg-blue: #1ac7c4ff;
-$medium-slate-blue: #8075ffff;
-$deep-saffron: #f19a3eff;
-$charcoal: rgb(30, 37, 48);
-$cream: #f1fec6ff;
 body {
   box-sizing: border-box;
   position: fixed;
@@ -129,12 +119,6 @@ h3 {
   border-radius: 16px;
   display: flex;
   flex-direction: column;
-}
-.control-panel {
-  display: flex;
-}
-.control-panel h2 {
-  flex: 0;
 }
 .center-panel {
   width: 100%;

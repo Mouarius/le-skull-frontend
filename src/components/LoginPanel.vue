@@ -1,41 +1,36 @@
 <template>
-  <div class="panel login-panel center-panel">
-    <h2>login form</h2>
+  <section class="panel login-panel center-panel">
+    <h1>Login_</h1>
     <form class="login-form" @submit="handleLoginFormSubmit">
       <div class="username-input">
-        <input
-          type="text"
+        <base-input
           name="input-username"
           id="input-username"
           v-model="inputUsername"
-          placeholder="username"
+          :placeholder="'username'"
           required
         />
       </div>
       <div class="submit-buttons">
-        <input
-          @click="handleCreateGameButton"
-          type="button"
-          value="create a room"
-        />
+        <base-button :clickHandler="handleCreateGameButton"
+          >create a room</base-button
+        >
         <p>or</p>
         <div class="join-room">
-          <input
-            type="text"
+          <base-input
+            :placeholder="'room code'"
+            v-model="inputRoomId"
             name="room-id"
             id="input-room-id"
-            v-model="inputRoomId"
-            placeholder="room code"
           />
-          <input
-            @click="handleJoinGameButton"
-            type="button"
-            value="join a room"
-          />
+
+          <base-button :clickHandler="handleJoinGameButton"
+            >join a room
+          </base-button>
         </div>
       </div>
     </form>
-  </div>
+  </section>
 </template>
 
 <script>
@@ -43,14 +38,18 @@ import axios from "axios";
 import { API_URL } from "../config/env";
 import { joinRoom } from "../socket";
 import { store } from "../store";
+import BaseButton from "./Interface/BaseButton.vue";
+import BaseInput from "./Interface/BaseInput.vue";
 
 export default {
   name: "login-panel",
   props: ["updatePlayer"],
+  components: { BaseButton, BaseInput },
   data() {
     return {
       inputUsername: "",
       inputRoomId: "",
+      testValue: "",
     };
   },
   methods: {
@@ -92,10 +91,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$charcoal: rgb(30, 37, 48);
+
+input[type="button"] {
+  background: white;
+}
 label {
   font-size: 0.8em;
   font-weight: 200;
   text-align: left;
+}
+.login-panel {
+  margin-top: 12px;
 }
 .login-form {
   display: flex;
@@ -109,8 +116,8 @@ label {
 .submit-buttons {
   display: flex;
   flex-direction: column;
-  margin-top: 24px;
   text-align: center;
+  margin-top: 12px;
   .join-room {
     display: flex;
     flex-direction: column;
