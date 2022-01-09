@@ -50,6 +50,7 @@ export default {
       inputUsername: "",
       inputRoomId: "",
       testValue: "",
+      sharedState: store.state,
     };
   },
   methods: {
@@ -60,10 +61,9 @@ export default {
         .post(API_URL + "/room/", { username: this.inputUsername })
         .then((res) => {
           const { room, user } = res.data;
-          console.log(res.data);
           this.updatePlayer(user);
           store.setRoomAction(room);
-          joinRoom(room.id);
+          joinRoom(this.sharedState.player.id, room.id);
         });
     },
     handleJoinGameButton(e) {
@@ -77,7 +77,7 @@ export default {
           const { room, user } = res.data;
           this.updatePlayer(user);
           store.setRoomAction(room);
-          joinRoom(room.id);
+          joinRoom(this.sharedState.player.id, room.id);
         });
     },
     handleLoginFormSubmit(e) {

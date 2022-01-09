@@ -6,7 +6,7 @@
     </div>
     <debug-panel />
     <login-panel v-if="!player.id" :update-player="updatePlayer"></login-panel>
-    <lobby-panel></lobby-panel>
+    <lobby-panel v-if="player.id"></lobby-panel>
   </div>
 </template>
 
