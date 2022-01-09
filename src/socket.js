@@ -1,17 +1,22 @@
 import { io } from "socket.io-client";
+import { store } from "./store";
 
 const socket = io("http://localhost:4001");
 
-export const joinRoom = (roomId) => {
-  console.log("Trying to join the socket room...");
-  socket.emit("JOIN_ROOM", roomId, (response) => {
-    console.log(response);
+export const joinRoom = (playerId, roomId) => {
+  console.log(`[SOCKET] ~ Trying to join the socket room : ${roomId}`);
+  socket.emit("JOIN_ROOM", playerId, roomId, (response) => {
+    console.log(`The server responded with :`, response);
   });
 };
 
-socket.on("PLAYER_JOINED", (updatedRoom) => {
+socket.on("PLAYER_JOINED", (player, updatedRoom) => {
   //TODO Update the room object
-  console.log("A new player has joined the room");
+  // response object is {playerWhoJoined, updatedRoom}
+  console.log(`${player.username} has joined the room :`, updatedRoom);
+  if (updatedRoom) {
+    store.setRoomAction(updatedRoom);
+  }
 });
 
 export default socket;
