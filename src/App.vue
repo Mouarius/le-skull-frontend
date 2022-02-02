@@ -87,6 +87,8 @@ body {
 .panel {
   display: block;
   width: 100%;
+  background-color: white;
+
   border: solid 4px $charcoal;
   padding: 12px;
   box-sizing: border-box;

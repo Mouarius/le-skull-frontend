@@ -11,9 +11,14 @@ export const joinRoom = (playerId, roomId) => {
 };
 
 socket.on("PLAYER_JOINED", (player, updatedRoom) => {
-  //TODO Update the room object
   // response object is {playerWhoJoined, updatedRoom}
   console.log(`${player.username} has joined the room :`, updatedRoom);
+  if (updatedRoom) {
+    store.setRoomAction(updatedRoom);
+  }
+});
+socket.on("PLAYER_LEFT", (player, updatedRoom) => {
+  console.log(`${player.username} has left the room :`, updatedRoom);
   if (updatedRoom) {
     store.setRoomAction(updatedRoom);
   }
