@@ -3,7 +3,7 @@
     <h1>Login_</h1>
     <form class="login-form" @submit="handleLoginFormSubmit">
       <div class="username-input">
-        <base-input
+        <BaseInput
           name="input-username"
           id="input-username"
           v-model="inputUsername"
@@ -12,82 +12,72 @@
         />
       </div>
       <div class="submit-buttons">
-        <base-button :clickHandler="handleCreateGameButton"
-          >create a room</base-button
+        <BaseButton :clickHandler="handleCreateGameButton"
+          >create a room</BaseButton
         >
         <p>or</p>
         <div class="join-room">
-          <base-input
+          <BaseInput
             :placeholder="'room code'"
             v-model="inputRoomId"
             name="room-id"
             id="input-room-id"
           />
 
-          <base-button :clickHandler="handleJoinGameButton"
+          <BaseButton :clickHandler="handleJoinGameButton"
             >join a room
-          </base-button>
+          </BaseButton>
         </div>
       </div>
     </form>
   </section>
 </template>
 
-<script>
+<script setup>
 import axios from "axios";
+import { ref } from "vue";
 import { API_URL } from "../config/env";
 import { joinRoom } from "../socket";
 import { store } from "../store";
+import { usePlayerStore } from "../store/playerStore";
 import BaseButton from "./Interface/BaseButton.vue";
 import BaseInput from "./Interface/BaseInput.vue";
 
-export default {
-  name: "login-panel",
-  props: ["updatePlayer"],
-  components: { BaseButton, BaseInput },
-  data() {
-    return {
-      inputUsername: "",
-      inputRoomId: "",
-      testValue: "",
-      sharedState: store.state,
-    };
-  },
-  methods: {
-    handleCreateGameButton(e) {
-      e.preventDefault();
-      console.log("Creating a new game...");
-      axios
-        .post(API_URL + "/room/", { username: this.inputUsername })
-        .then((res) => {
-          const { room, user } = res.data;
-          this.updatePlayer(user);
-          store.setRoomAction(room);
-          joinRoom(this.sharedState.player.id, room.id);
-        });
-    },
-    handleJoinGameButton(e) {
-      e.preventDefault();
-      console.log(`Joining the game with id ${this.inputRoomId} ...`);
-      axios
-        .post(API_URL + `/room/${this.inputRoomId}`, {
-          username: this.inputUsername,
-        })
-        .then((res) => {
-          const { room, user } = res.data;
-          this.updatePlayer(user);
-          store.setRoomAction(room);
-          joinRoom(this.sharedState.player.id, room.id);
-        });
-    },
-    handleLoginFormSubmit(e) {
-      e.preventDefault();
-    },
-    createRoom() {
-      axios.post(API_URL + "/room", {});
-    },
-  },
-};
+const inputUsername = ref("");
+const inputRoomId = ref("");
+
+const playerStore = usePlayerStore();
+
+function handleCreateGameButton(e) {
+  e.preventDefault();
+  console.log("Creating a new game...");
+  axios.post(API_URL + "/room/", { username: inputUsername }).then((res) => {
+    const { room, user } = res.data;
+    playerStore.updatePlayer(user);
+    store.setRoomAction(room);
+    joinRoom(playerStore.id, room.id);
+  });
+}
+function handleJoinGameButton(e) {
+  e.preventDefault();
+  console.log(`Joining the game with id ${this.inputRoomId} ...`);
+  axios
+    .post(API_URL + `/room/${inputRoomId}`, {
+      username: inputUsername,
+    })
+    .then((res) => {
+      const { room, user } = res.data;
+      playerStore.updatePlayer(user);
+      store.setRoomAction(room);
+      joinRoom(playerStore.id, room.id);
+    });
+}
+function handleLoginFormSubmit(e) {
+  e.preventDefault();
+}
+function createRoom() {
+  axios.post(API_URL + "/room", {});
+}
 </script>
 
 <style lang="scss" scoped>

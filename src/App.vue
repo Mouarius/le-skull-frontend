@@ -5,7 +5,7 @@
       <div class="title-decoration"></div>
     </div>
     <DebugPanel />
-    <LoginPanel v-if="!player.id" :update-player="updatePlayer"></LoginPanel>
+    <LoginPanel v-if="!player.id"></LoginPanel>
     <LobbyPanel v-if="player.id"></LobbyPanel>
   </div>
 </template>
@@ -18,7 +18,7 @@ import LoginPanel from "./components/LoginPanel.vue";
 import LobbyPanel from "./components/LobbyPanel.vue";
 import DebugPanel from "./components/Debug/DebugPanel.vue";
 import { onMounted, reactive, ref } from "vue";
-
+import { usePlayerStore } from "./store/playerStore";
 const players = ref([]);
 
 const player = reactive({
@@ -30,11 +30,17 @@ const player = reactive({
 
 const sharedState = store.state;
 
+const playerStore = usePlayerStore();
+
 function updatePlayer(newPlayer) {
   console.log("Update player");
-  this.player.id = newPlayer.id;
-  this.player.username = newPlayer.username;
-  store.setPlayerAction(this.player);
+  player.id = newPlayer.id;
+  player.username = newPlayer.username;
+
+  //! Will be removed
+  store.setPlayerAction(player);
+
+  playerStore.updatePlayer(player);
 }
 
 function retrieveColorsList() {
