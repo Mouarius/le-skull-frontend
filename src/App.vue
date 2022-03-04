@@ -4,67 +4,50 @@
       <h1>Le Skull</h1>
       <div class="title-decoration"></div>
     </div>
-    <debug-panel />
-    <login-panel v-if="!player.id" :update-player="updatePlayer"></login-panel>
-    <lobby-panel v-if="player.id"></lobby-panel>
+    <DebugPanel />
+    <LoginPanel v-if="!player.id" :update-player="updatePlayer"></LoginPanel>
+    <LobbyPanel v-if="player.id"></LobbyPanel>
   </div>
 </template>
 
-<script>
-import LoginPanel from "./components/LoginPanel.vue";
-import DebugPanel from "./components/Debug/DebugPanel.vue";
+<script setup>
 import axios from "axios";
 import { API_URL } from "./config/env";
 import { store } from "./store";
+import LoginPanel from "./components/LoginPanel.vue";
 import LobbyPanel from "./components/LobbyPanel.vue";
+import DebugPanel from "./components/Debug/DebugPanel.vue";
+import { onMounted, reactive, ref } from "vue";
 
-export default {
-  name: "App",
-  components: { LoginPanel, DebugPanel, LobbyPanel, DebugPanel },
-  data() {
-    return {
-      players: [],
-      users: [],
-      player: {
-        id: "",
-        username: "",
-        color: "",
-        socket: "",
-      },
-      sharedState: store.state,
-    };
-  },
-  methods: {
-    updatePlayer(newPlayer) {
-      this.player.id = newPlayer.id;
-      this.player.username = newPlayer.username;
-      store.setPlayerAction(this.player);
-    },
-    handleHelloButton() {
-      socket.emit("hello");
-    },
-    handleTestButton(e) {
-      const button = e.target;
-      if (button.value === "user-list") {
-        console.log("🛠 TEST - Requesting the list of users");
-        axios.get(API_URL + "/player").then((res) => {
-          console.log(res.data);
-          this.users = res.data;
-        });
-      }
-    },
-    retrieveColorsList() {
-      axios.get(API_URL + "/colors").then((res) => {
-        //dispatch the list of colors to store
-        //TODO : Validate the values
-        store.setColorsAction(res.data);
-      });
-    },
-  },
-  created() {
-    this.retrieveColorsList();
-  },
-};
+const players = ref([]);
+
+const player = reactive({
+  id: "",
+  username: "",
+  color: "",
+  socket: "",
+});
+
+const sharedState = store.state;
+
+function updatePlayer(newPlayer) {
+  console.log("Update player");
+  this.player.id = newPlayer.id;
+  this.player.username = newPlayer.username;
+  store.setPlayerAction(this.player);
+}
+
+function retrieveColorsList() {
+  axios.get(API_URL + "/colors").then((res) => {
+    //dispatch the list of colors to store
+    //TODO : Validate the values
+    store.setColorsAction(res.data);
+  });
+}
+
+onMounted(() => {
+  retrieveColorsList();
+});
 </script>
 
 <style lang="scss">
