@@ -3,27 +3,21 @@
     <h2>Player Info :</h2>
     <ul class="var-list">
       <li>
-        username : <em>{{ sharedState.player.username }}</em>
+        username : <em>{{ playerStore.username }}</em>
       </li>
       <li>
-        id :<em>{{ sharedState.player.id }}</em>
+        id :<em>{{ playerStore.id }}</em>
       </li>
       <li>
-        color :<em>{{ sharedState.player.color }}</em>
+        color :<em>{{ playerStore.color }}</em>
       </li>
     </ul>
   </section>
 </template>
 
-<script>
-import { store } from "../../store";
-export default {
-  name: "player-info",
-  data() {
-    return {
-      sharedState: store.state,
-    };
-  },
-};
+<script setup>
+import { usePlayerStore } from "../../store/playerStore";
+
+const playerStore = usePlayerStore();
 </script>
 <style lang="scss"></style>

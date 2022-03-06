@@ -5,49 +5,31 @@
       <div class="title-decoration"></div>
     </div>
     <DebugPanel />
-    <LoginPanel v-if="!player.id"></LoginPanel>
-    <LobbyPanel v-if="player.id"></LobbyPanel>
+    <LoginPanel v-if="!playerStore.id"></LoginPanel>
+    <LobbyPanel v-if="playerStore.id"></LobbyPanel>
   </div>
 </template>
 
 <script setup>
 import axios from "axios";
 import { API_URL } from "./config/env";
-import { store } from "./store";
 import LoginPanel from "./components/LoginPanel.vue";
 import LobbyPanel from "./components/LobbyPanel.vue";
 import DebugPanel from "./components/Debug/DebugPanel.vue";
 import { onMounted, reactive, ref } from "vue";
 import { usePlayerStore } from "./store/playerStore";
-const players = ref([]);
+import { useStore } from "./store/mainStore";
 
-const player = reactive({
-  id: "",
-  username: "",
-  color: "",
-  socket: "",
-});
-
-const sharedState = store.state;
+const store = useStore();
 
 const playerStore = usePlayerStore();
-
-function updatePlayer(newPlayer) {
-  console.log("Update player");
-  player.id = newPlayer.id;
-  player.username = newPlayer.username;
-
-  //! Will be removed
-  store.setPlayerAction(player);
-
-  playerStore.updatePlayer(player);
-}
 
 function retrieveColorsList() {
   axios.get(API_URL + "/colors").then((res) => {
     //dispatch the list of colors to store
     //TODO : Validate the values
-    store.setColorsAction(res.data);
+
+    store.setColors(res.data);
   });
 }
 

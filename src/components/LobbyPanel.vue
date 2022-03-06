@@ -6,21 +6,21 @@
       <ul>
         <li>
           Your color :
-          <span class="picked-color" :style="{ color: colorPicked.hex }">{{
-            colorPicked.name
+          <span class="picked-color" :style="{ color: pickedColor.hex }">{{
+            pickedColor.name
           }}</span>
         </li>
-        <li>Your name : {{ sharedState.player.username }}</li>
+        <li>Your name : {{ playerStore.username }}</li>
       </ul>
       <h3>Select your color :</h3>
       <ul class="color-selector">
-        <li v-for="(color, index) in sharedState.colors" :key="color.name">
+        <li v-for="(color, index) in store.colors" :key="color.name">
           <input
             type="radio"
             name="color-selector"
             :id="`color-${index}`"
             :value="color"
-            v-model="colorPicked"
+            v-model="pickedColor"
           />
           <label :for="`color-${index}`">{{ color.name }}</label>
         </li>
@@ -38,23 +38,14 @@
   </div>
 </template>
 
-<script>
-import { store } from "../store";
-export default {
-  name: "lobby-panel",
-  data() {
-    return {
-      colorPicked: { name: "", hex: "#000000" },
-      sharedState: store.state,
-    };
-  },
-  watch: {
-    colorPicked(newColor, lastColor) {
-      //Ask the server if the color is available
-      //Gets the response as a color object and dispatch to store the new color
-    },
-  },
-};
+<script setup>
+import { ref } from "vue";
+import { useStore } from "../store/mainStore";
+import { usePlayerStore } from "../store/playerStore";
+
+const pickedColor = ref({});
+const store = useStore();
+const playerStore = usePlayerStore();
 </script>
 
 <style lang="scss" scoped></style>

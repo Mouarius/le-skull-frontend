@@ -3,12 +3,12 @@
     <h2>Room Info :</h2>
     <ul class="var-list">
       <li>
-        id : <em>{{ sharedState.room.id }}</em>
+        id : <em>{{ roomStore.id }}</em>
       </li>
       <li>
         players :
         <ul class="player-list">
-          <li v-for="player in sharedState.room.players" :key="player.id">
+          <li v-for="player in roomStore.players" :key="player.id">
             <em>{{ player.username }}</em>
           </li>
         </ul>
@@ -17,16 +17,10 @@
   </section>
 </template>
 
-<script>
-import { store } from "../../store";
-export default {
-  name: "room-info",
-  data() {
-    return {
-      sharedState: store.state,
-    };
-  },
-};
+<script setup>
+import { useRoomStore } from "../../store/roomStore";
+
+const roomStore = useRoomStore();
 </script>
 
 <style lang="scss" scoped>

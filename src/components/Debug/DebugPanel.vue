@@ -2,25 +2,15 @@
   <div class="debug-panel panel">
     <h1>Debug_</h1>
     <div class="info-container">
-      <player-info />
-      <room-info />
+      <PlayerInfo />
+      <RoomInfo />
     </div>
   </div>
 </template>
 
-<script>
-import { store } from "../../store";
+<script setup>
 import PlayerInfo from "./PlayerInfo.vue";
 import RoomInfo from "./RoomInfo.vue";
-export default {
-  components: { PlayerInfo, RoomInfo },
-  name: "debug-panel",
-  data() {
-    return {
-      sharedState: store.state,
-    };
-  },
-};
 </script>
 
 <style lang="scss">
