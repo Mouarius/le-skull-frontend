@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { socketClient } from "../socket.ts"
+import { SocketClient } from "../socket.ts"
 import { store } from "../store"
 const roomId = ref<string>("")
+const socketClient = new SocketClient("bibibibibi")
 const handleCreateRoom = async (event: MouseEvent) => {
     console.log(event)
     const response = await socketClient.createRoom()

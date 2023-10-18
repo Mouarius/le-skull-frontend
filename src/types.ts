@@ -3,12 +3,16 @@ export interface SocketServerResponse {
   data: unknown;
 }
 
-export interface Player {
-  id: string;
-  username: string;
-  color: string;
-  socketId: string;
+export interface User {
+  id?: string;
+  username?: string;
+  socketId?: string;
 }
+
+export interface Player extends User {
+  color?: string;
+}
+
 export interface Room {
   id: string;
   players: Player[];
